@@ -15,4 +15,8 @@ Clone the project and run:
     
 ## Running
 
+### On 'standalone' mode
     npm start
+
+### On docker
+    docker-compose up -d
