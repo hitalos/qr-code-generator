@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  .row
+    .col-md-6.col-md-offset-3
+      h1= title
+  .row.form-horizontal
+    .form-group
+      .col-md-6.col-md-offset-3
+        input#str.form-control(placeholder="Digite o Texto")
+        #img.center-block
+  script(src='/scripts/app.js')
