@@ -2,11 +2,11 @@ const coffeeMiddleware = require('coffee-middleware')
 const compression = require('compression')
 const express = require('express')
 const sassMiddleware = require('node-sass-middleware')
-const qr = require('qr-image')
 
 process.on('uncaughtException', console.error)
 
 const index = require('./routes/index')
+const qrcode = require('./routes/qrcode')
 
 const app = express()
 app.use(compression())
@@ -30,14 +30,7 @@ app.use(coffeeMiddleware({
 app.use(express.static('./public'))
 
 app.use('/', index)
-app.get('/qrcode/svg/:str', (req, res) => {
-  res.header({ 'Content-Type': 'image/svg+xml' })
-  res.end(qr.imageSync(req.params.str, { type: 'svg' }))
-})
-app.get('/qrcode/png/:str', (req, res) => {
-  res.header({ 'Content-Type': 'image/png' })
-  res.end(qr.imageSync(req.params.str))
-})
+app.use('/qrcode', qrcode)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
