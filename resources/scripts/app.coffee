@@ -15,8 +15,8 @@ str.addEventListener('keyup', () ->
     timer = setTimeout(() ->
       latest = str.value.trim()
       root = window.location + 'qrcode/svg/'
-      link = root + encodeURI(latest)
-      lnk.setAttribute('href', root + encodeURI(latest))
+      link = root + encodeURIComponent(latest)
+      lnk.setAttribute('href', link)
       lnk.innerHTML = root + latest
       img.parentNode.insertBefore(alert, img)
       img.innerHTML = '<img src="' + link + '">'
