@@ -1,7 +1,6 @@
-const express = require('express')
-const bodyParser = require('body-parser')
 const coffeeMiddleware = require('coffee-middleware')
 const compression = require('compression')
+const express = require('express')
 const sassMiddleware = require('node-sass-middleware')
 const qr = require('qr-image')
 
@@ -28,14 +27,16 @@ app.use(coffeeMiddleware({
   src: 'resources'
 }))
 
-app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static('./public'))
 
 app.use('/', index)
-
-app.post('/qrcode/svg', (req, res) => {
+app.get('/qrcode/svg/:str', (req, res) => {
   res.header({ 'Content-Type': 'image/svg+xml' })
-  res.end(qr.imageSync(req.body.str, { type: 'svg' }))
+  res.end(qr.imageSync(req.params.str, { type: 'svg' }))
+})
+app.get('/qrcode/png/:str', (req, res) => {
+  res.header({ 'Content-Type': 'image/png' })
+  res.end(qr.imageSync(req.params.str))
 })
 
 // catch 404 and forward to error handler
