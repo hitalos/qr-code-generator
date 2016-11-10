@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const coffeeMiddleware = require('coffee-middleware')
+const compression = require('compression')
 const sassMiddleware = require('node-sass-middleware')
 const qr = require('qr-image')
 
@@ -9,6 +10,7 @@ process.on('uncaughtException', console.error)
 const index = require('./routes/index')
 
 const app = express()
+app.use(compression())
 
 // view engine setup
 app.set('views', './resources/views')
