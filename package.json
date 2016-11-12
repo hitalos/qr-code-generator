@@ -2,6 +2,7 @@
   "name": "qr-code-generator",
   "version": "1.0.0",
   "private": true,
+  "engines": { "node": ">=6.0.0 <7" },
   "scripts": {
     "lint": "eslint *.js,routes/*.js",
     "start": "node ./bin/www"
