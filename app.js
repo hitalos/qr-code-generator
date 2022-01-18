@@ -1,36 +1,27 @@
-const coffeeMiddleware = require('coffee-middleware')
-const compression = require('compression')
 const express = require('express')
-const sassMiddleware = require('node-sass-middleware')
+const qr = require('qr-image')
+const logger = require('pino')()
 
-process.on('uncaughtException', console.error)
-
-const index = require('./routes/index')
-const qrcode = require('./routes/qrcode')
+process.on('uncaughtException', logger.error)
 
 const app = express()
-app.use(compression())
 
 // view engine setup
 app.set('views', './resources/views')
 app.set('view engine', 'pug')
-app.use(sassMiddleware({
-  src: 'resources',
-  dest: './public',
-  debug: false,
-  indentedSyntax: true,
-  outputStyle: 'compressed'
-}))
-app.use(coffeeMiddleware({
-  compress: true,
-  debug: false,
-  src: 'resources'
-}))
 
 app.use(express.static('./public'))
 
-app.use('/', index)
-app.use('/qrcode', qrcode)
+app.get('/', (_, res) => {
+  res.render('index', { title: 'QR code generator' })
+})
+
+app.get('/qrcode/:type(png|svg)/:str', (req, res) => {
+  let ct = 'image/svg+xml'
+  if (req.params.type === 'png') ct = 'image/png'
+  res.header({ 'Content-Type': ct })
+  res.end(qr.imageSync(req.params.str, { type: req.params.type }))
+})
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -1,16 +1,12 @@
 {
+  "root": true,
   "env": {
     "es6": true,
     "node": true,
     "browser": true
   },
-  "extends": "airbnb",
-  "installedESLint": true,
-  "plugins": [
-    "react",
-    "jsx-a11y",
-    "import"
-  ],
+  "extends": "airbnb-base",
+
   "rules": {
     "comma-dangle": [1, "only-multiline"],
     "import/no-extraneous-dependencies": 0,

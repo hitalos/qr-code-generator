@@ -2,27 +2,27 @@
   "name": "qr-code-generator",
   "version": "1.0.0",
   "private": true,
-  "engines": { "node": ">=6.0.0 <7" },
   "scripts": {
-    "lint": "eslint *.js,routes/*.js",
+    "build:css": "sass --style=compressed --no-source-map resources/styles/style.sass public/styles/style.css",
+    "build:css:dev": "sass --watch --no-source-map resources/styles/style.sass public/styles/style.css",
+    "build:js": "esbuild --minify --outdir=public/scripts resources/scripts/app.js",
+    "build:js:dev": "esbuild --watch --outdir=public/scripts resources/scripts/app.js",
+    "build:all": "npm run build:css && npm run build:js",
+    "clean": "rm -rf public",
+    "lint": "eslint {.,resources/scripts}/*.js bin/www",
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "bootstrap-sass": "^3.3.7",
-    "coffee-middleware": "^0.3.0",
-    "compression": "^1.6.2",
-    "debug": "^2.3.0",
-    "express": "~4.14.0",
-    "node-sass-middleware": "^0.9.8",
-    "pug": "^2.0.0-beta6",
-    "qr-image": "^3.1.0"
+    "express": "~4.17.2",
+    "pino": "^7.6.3",
+    "pug": "^3.0.2",
+    "qr-image": "^3.2.0"
   },
   "devDependencies": {
-    "babel-eslint": "^7.1.0",
-    "eslint": "^3.9.1",
-    "eslint-config-airbnb": "^13.0.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^2.2.3",
-    "eslint-plugin-react": "^6.6.0"
+    "esbuild": "^0.14.11",
+    "eslint": "^8.7.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "sass": "^1.48.0"
   }
 }

@@ -1,4 +1,4 @@
-FROM node:6.9.1
+FROM node:16
 
 ADD . /var/www
 WORKDIR /var/www
