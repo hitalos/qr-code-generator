@@ -1,7 +1,17 @@
-FROM node:16
+FROM docker.io/library/node:18-alpine AS builder
 
-ADD . /var/www
 WORKDIR /var/www
-RUN npm install --production
+COPY package.json package-lock.json .
+RUN npm ci
+COPY . .
+RUN npm run build:all
+
+FROM docker.io/library/node:18-alpine
+
+WORKDIR /var/www
+COPY package.json package-lock.json .
+RUN npm ci --omit=dev
+COPY --from=builder /var/www/public ./public
+COPY . .
 
 CMD npm start

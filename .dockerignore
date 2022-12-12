@@ -3,7 +3,7 @@
 .git
 .gitignore
 node_modules
-public/styles
+public
 README.md
 Dockerfile
 docker-compose.yml
