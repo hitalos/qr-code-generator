@@ -2,9 +2,12 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -51,7 +54,35 @@ func listen(mux *chi.Mux, port int) {
 		Handler:      mux,
 	}
 
+	log.Printf("Listening on: \n\thttp://%s%s", strings.Join(localAddresses(), s.Addr+"\n\thttp://"), s.Addr)
 	if err := s.ListenAndServe(); err != nil {
 		log.Println(err)
 	}
+}
+
+func localAddresses() []string {
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	ips := []string{}
+	for _, i := range ifaces {
+		addrs, err := i.Addrs()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		for _, a := range addrs {
+			switch v := a.(type) {
+			case *net.IPNet:
+				if v.IP.To4() == nil {
+					ips = append(ips, fmt.Sprintf("[%s]", v.IP))
+					continue
+				}
+				ips = append(ips, v.IP.String())
+			}
+		}
+	}
+
+	return ips
 }
