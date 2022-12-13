@@ -1,17 +1,14 @@
-FROM docker.io/library/node:18-alpine AS builder
+FROM docker.io/library/golang:1.19-alpine AS builder
 
-WORKDIR /var/www
-COPY package.json package-lock.json .
-RUN npm ci
+WORKDIR /app
+COPY go.mod go.sum .
+RUN go mod download && apk -U add upx
 COPY . .
-RUN npm run build:all
+RUN CGO_ENABLED=0 go build -ldflags '-s -w' -trimpath -o dist/qrcode . && upx dist/qrcode
 
-FROM docker.io/library/node:18-alpine
+FROM scratch
 
-WORKDIR /var/www
-COPY package.json package-lock.json .
-RUN npm ci --omit=dev
-COPY --from=builder /var/www/public ./public
-COPY . .
+WORKDIR /app
+COPY --from=builder /app/dist/qrcode .
 
-CMD npm start
+CMD ["/app/qrcode"]

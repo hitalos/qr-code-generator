@@ -2,8 +2,6 @@
 .editorconfig
 .git
 .gitignore
-node_modules
-public
 README.md
 Dockerfile
 docker-compose.yml
