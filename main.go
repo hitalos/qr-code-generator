@@ -35,6 +35,7 @@ func createApp() *chi.Mux {
 	}
 
 	r := chi.NewRouter()
+	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Compress(6))
 	r.HandleFunc("/", handlers.Index(engine))
