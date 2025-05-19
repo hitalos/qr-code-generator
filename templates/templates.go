@@ -4,7 +4,7 @@ import (
 	"embed"
 	"net/http"
 
-	"github.com/gofiber/template/html"
+	"github.com/gofiber/template/html/v2"
 )
 
 var (

@@ -9,7 +9,7 @@ import (
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
 	"github.com/go-chi/chi/v5"
-	"github.com/gofiber/template/html"
+	"github.com/gofiber/template/html/v2"
 )
 
 func Index(engine *html.Engine) http.HandlerFunc {
