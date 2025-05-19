@@ -68,5 +68,5 @@ func SVGimage(w http.ResponseWriter, r *http.Request) {
 func errHandler(err error, w http.ResponseWriter) {
 	log.Println(err)
 	w.WriteHeader(http.StatusInternalServerError)
-	w.Write([]byte("error!"))
+	_, _ = w.Write([]byte("error!"))
 }
