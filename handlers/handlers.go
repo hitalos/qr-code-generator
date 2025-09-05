@@ -4,6 +4,7 @@ import (
 	"image/png"
 	"log"
 	"net/http"
+	"net/url"
 
 	svg "github.com/ajstarks/svgo"
 	"github.com/boombuler/barcode"
@@ -21,7 +22,12 @@ func Index(engine *html.Engine) http.HandlerFunc {
 }
 
 func createBarcode(r *http.Request, scale int) (barcode.Barcode, error) {
-	qrcode, err := qr.Encode(chi.URLParam(r, "str"), qr.M, qr.Auto)
+	str, err := url.QueryUnescape(chi.URLParam(r, "str"))
+	if err != nil {
+		return nil, err
+	}
+
+	qrcode, err := qr.Encode(str, qr.M, qr.Auto)
 	if err != nil {
 		return qrcode, err
 	}
