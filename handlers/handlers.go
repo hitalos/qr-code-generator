@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	svg "github.com/ajstarks/svgo"
 	"github.com/boombuler/barcode"
@@ -44,16 +45,23 @@ func createBarcode(r *http.Request, scale int) (barcode.Barcode, error) {
 }
 
 func PNGimage(w http.ResponseWriter, r *http.Request) {
-	qrcode, err := createBarcode(r, 20)
+	blockSize := 1
+	if r.URL.Query().Get("bs") != "" {
+		bs, err := strconv.Atoi(r.URL.Query().Get("bs"))
+		if err == nil && bs > 0 && bs <= 100 {
+			blockSize = bs
+		}
+	}
+
+	qrcode, err := createBarcode(r, blockSize)
 	if err != nil {
 		errHandler(err, w)
 	}
 
-	border := 20
 	bColor := color.RGBA{255, 255, 255, 255}
-	borderedImage := image.NewRGBA(image.Rect(0, 0, qrcode.Bounds().Dx()+2*border, qrcode.Bounds().Dy()+2*border))
+	borderedImage := image.NewRGBA(image.Rect(0, 0, qrcode.Bounds().Dx()+2*blockSize, qrcode.Bounds().Dy()+2*blockSize))
 	draw.Draw(borderedImage, borderedImage.Bounds(), &image.Uniform{C: bColor}, image.Point{}, draw.Src)
-	draw.Draw(borderedImage, image.Rect(border, border, qrcode.Bounds().Dx()+border, qrcode.Bounds().Dy()+border), qrcode, image.Point{}, draw.Src)
+	draw.Draw(borderedImage, image.Rect(blockSize, blockSize, qrcode.Bounds().Dx()+blockSize, qrcode.Bounds().Dy()+blockSize), qrcode, image.Point{}, draw.Src)
 
 	if err = png.Encode(w, borderedImage); err != nil {
 		errHandler(err, w)

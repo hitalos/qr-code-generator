@@ -30,8 +30,11 @@ textarea {
 }
 
 #img img {
+	aspect-ratio: 1;
+	image-rendering: pixelated;
 	margin: auto;
 	max-width: 100%;
+	width: 500px;
 }
 
 .alert {
