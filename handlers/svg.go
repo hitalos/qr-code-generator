@@ -18,10 +18,10 @@ type qrSVG struct {
 }
 
 func (qs *qrSVG) WriteQrSVG(s *svg.SVG) error {
-	qs.startingX = 2
-	qs.startingY = 2
+	qs.startingX = 1
+	qs.startingY = 1
 	qs.qrWidth = qs.qr.Bounds().Max.X
-	width := qs.qrWidth + 4
+	width := qs.qrWidth + 2
 
 	s.Startraw(fmt.Sprintf("viewBox=\"0 0 %d %[1]d\"", width*qs.blockSize))
 	s.Style("text/css", "rect { fill: white }")
@@ -30,6 +30,8 @@ func (qs *qrSVG) WriteQrSVG(s *svg.SVG) error {
 		currY := qs.startingY
 
 		s.Group(fmt.Sprintf("transform: scale(%d)", qs.blockSize))
+		s.Rect(0, 0, width, width, `style="fill: white"`)
+
 		for x := 0; x < qs.qrWidth; x++ {
 			currX := qs.startingX
 			for y := 0; y < qs.qrWidth; y++ {
