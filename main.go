@@ -15,7 +15,6 @@ import (
 
 	"github.com/hitalos/qr-code-generator/handlers"
 	"github.com/hitalos/qr-code-generator/static"
-	"github.com/hitalos/qr-code-generator/templates"
 )
 
 func main() {
@@ -29,16 +28,11 @@ func main() {
 }
 
 func createApp() *chi.Mux {
-	engine, err := templates.SetTemplates()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
 	r := chi.NewRouter()
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Compress(6))
-	r.HandleFunc("/", handlers.Index(engine))
+	r.HandleFunc("/", handlers.Index())
 	r.HandleFunc("/qrcode/svg/{str}", handlers.SVGimage)
 	r.HandleFunc("/qrcode/png/{str}", handlers.PNGimage)
 	r.Handle("/*", http.FileServer(static.Dir))

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"html/template"
 	"image"
 	"image/color"
 	"image/draw"
@@ -14,12 +15,15 @@ import (
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
 	"github.com/go-chi/chi/v5"
-	"github.com/gofiber/template/html/v2"
+
+	"github.com/hitalos/qr-code-generator/templates"
 )
 
-func Index(engine *html.Engine) http.HandlerFunc {
+func Index() http.HandlerFunc {
+	indexTmpl := template.Must(template.New("index.html").ParseFS(templates.Embeds, "index.html", "partials/*.html"))
+
 	return func(w http.ResponseWriter, r *http.Request) {
-		if err := engine.Render(w, "index", nil, "layouts/main"); err != nil {
+		if err := indexTmpl.Execute(w, nil); err != nil {
 			errHandler(err, w)
 		}
 	}
