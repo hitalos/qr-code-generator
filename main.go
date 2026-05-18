@@ -6,7 +6,6 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -18,7 +17,7 @@ import (
 )
 
 func main() {
-	port := flag.Int("p", 3000, "tcp port to listen")
+	port := flag.String("p", ":3000", "tcp port to listen")
 
 	flag.Parse()
 
@@ -40,12 +39,12 @@ func createApp() *chi.Mux {
 	return r
 }
 
-func listen(mux *chi.Mux, port int) {
+func listen(mux *chi.Mux, port string) {
 	s := http.Server{
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 30 * time.Second,
 		IdleTimeout:  60 * time.Second,
-		Addr:         ":" + strconv.Itoa(port),
+		Addr:         port,
 		Handler:      mux,
 	}
 
