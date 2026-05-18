@@ -2,12 +2,8 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
-	"net"
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -18,7 +14,7 @@ import (
 )
 
 func main() {
-	port := flag.Int("p", 3000, "tcp port to listen")
+	port := flag.String("p", ":3000", "tcp port to listen")
 
 	flag.Parse()
 
@@ -40,44 +36,17 @@ func createApp() *chi.Mux {
 	return r
 }
 
-func listen(mux *chi.Mux, port int) {
+func listen(mux *chi.Mux, port string) {
 	s := http.Server{
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 30 * time.Second,
 		IdleTimeout:  60 * time.Second,
-		Addr:         ":" + strconv.Itoa(port),
+		Addr:         port,
 		Handler:      mux,
 	}
 
-	log.Printf("Listening on: \n\thttp://%s%s", strings.Join(localAddresses(), s.Addr+"\n\thttp://"), s.Addr)
+	log.Printf("Listening on: %s", s.Addr)
 	if err := s.ListenAndServe(); err != nil {
 		log.Println(err)
 	}
-}
-
-func localAddresses() []string {
-	ifaces, err := net.Interfaces()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	ips := []string{}
-	for _, i := range ifaces {
-		addrs, err := i.Addrs()
-		if err != nil {
-			log.Fatalln(err)
-		}
-		for _, a := range addrs {
-			if v, ok := a.(*net.IPNet); ok {
-				if v.IP.To4() == nil {
-					ips = append(ips, fmt.Sprintf("[%s]", v.IP))
-
-					continue
-				}
-				ips = append(ips, v.IP.String())
-			}
-		}
-	}
-
-	return ips
 }
