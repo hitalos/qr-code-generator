@@ -1,5 +1,5 @@
 build:
-	CGO_ENABLED=0 go build -ldflags '-s -w' -trimpath -o dist/qrcode .
+	CGO_ENABLED=0 go build -ldflags '-s -w' -trimpath -o dist/ .
 
 IMAGE_BUILDER=$(shell [ -e /usr/bin/podman ] && echo podman || echo docker)
 container-image:
