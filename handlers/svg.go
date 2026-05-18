@@ -9,6 +9,8 @@ import (
 	"github.com/boombuler/barcode"
 )
 
+var ErrSVGCantWrite = errors.New("can not write to SVG: Not a QR code")
+
 type qrSVG struct {
 	qr        barcode.Barcode
 	qrWidth   int
@@ -32,9 +34,9 @@ func (qs *qrSVG) WriteQrSVG(s *svg.SVG) error {
 		s.Group(fmt.Sprintf("transform: scale(%d)", qs.blockSize))
 		s.Rect(0, 0, width, width, `style="fill: white"`)
 
-		for x := 0; x < qs.qrWidth; x++ {
+		for x := range qs.qrWidth {
 			currX := qs.startingX
-			for y := 0; y < qs.qrWidth; y++ {
+			for y := range qs.qrWidth {
 				if qs.qr.At(x, y) == color.Black {
 					s.Rect(currX, currY, 1, 1, "fill:black")
 				} else if qs.qr.At(x, y) == color.White {
@@ -45,7 +47,9 @@ func (qs *qrSVG) WriteQrSVG(s *svg.SVG) error {
 			currY += 1
 		}
 		s.Gend()
+
 		return nil
 	}
-	return errors.New("can not write to SVG: Not a QR code")
+
+	return ErrSVGCantWrite
 }

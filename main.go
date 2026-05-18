@@ -68,10 +68,10 @@ func localAddresses() []string {
 			log.Fatalln(err)
 		}
 		for _, a := range addrs {
-			switch v := a.(type) {
-			case *net.IPNet:
+			if v, ok := a.(*net.IPNet); ok {
 				if v.IP.To4() == nil {
 					ips = append(ips, fmt.Sprintf("[%s]", v.IP))
+
 					continue
 				}
 				ips = append(ips, v.IP.String())

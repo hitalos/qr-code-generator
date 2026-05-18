@@ -64,8 +64,18 @@ func PNGimage(w http.ResponseWriter, r *http.Request) {
 
 	bColor := color.RGBA{255, 255, 255, 255}
 	borderedImage := image.NewRGBA(image.Rect(0, 0, qrcode.Bounds().Dx()+2*blockSize, qrcode.Bounds().Dy()+2*blockSize))
-	draw.Draw(borderedImage, borderedImage.Bounds(), &image.Uniform{C: bColor}, image.Point{}, draw.Src)
-	draw.Draw(borderedImage, image.Rect(blockSize, blockSize, qrcode.Bounds().Dx()+blockSize, qrcode.Bounds().Dy()+blockSize), qrcode, image.Point{}, draw.Src)
+	draw.Draw(
+		borderedImage,
+		borderedImage.Bounds(),
+		&image.Uniform{C: bColor},
+		image.Point{},
+		draw.Src)
+	draw.Draw(
+		borderedImage,
+		image.Rect(blockSize, blockSize, qrcode.Bounds().Dx()+blockSize, qrcode.Bounds().Dy()+blockSize),
+		qrcode,
+		image.Point{},
+		draw.Src)
 
 	if err = png.Encode(w, borderedImage); err != nil {
 		errHandler(err, w)
