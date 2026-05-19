@@ -8,10 +8,13 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/httprate"
 
 	"github.com/hitalos/qr-code-generator/handlers"
 	"github.com/hitalos/qr-code-generator/static"
 )
+
+const MAX_REQUESTS_PER_MINUTE = 600
 
 func main() {
 	port := flag.String("p", ":3000", "tcp port to listen")
@@ -24,9 +27,11 @@ func main() {
 }
 
 func createApp() *chi.Mux {
+	limiter := httprate.LimitByIP(MAX_REQUESTS_PER_MINUTE, time.Minute)
 	r := chi.NewRouter()
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
+	r.Use(limiter)
 	r.Use(middleware.Compress(6))
 	r.HandleFunc("/", handlers.Index())
 	r.HandleFunc("/qrcode/svg/{str}", handlers.SVGimage)
