@@ -27,9 +27,15 @@ func main() {
 }
 
 func createApp() *chi.Mux {
-	limiter := httprate.LimitByIP(MAX_REQUESTS_PER_MINUTE, time.Minute)
+	limiter := httprate.LimitBy(
+		MAX_REQUESTS_PER_MINUTE,
+		time.Minute,
+		func(r *http.Request) (string, error) {
+			return httprate.CanonicalizeIP(middleware.GetClientIP(r.Context())), nil
+		},
+	)
 	r := chi.NewRouter()
-	r.Use(middleware.RealIP)
+	r.Use(middleware.ClientIPFromHeader("X-Forwarded-For"))
 	r.Use(middleware.Logger)
 	r.Use(limiter)
 	r.Use(middleware.Compress(6))
